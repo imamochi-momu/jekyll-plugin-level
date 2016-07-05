@@ -6,17 +6,16 @@ module Jekyll
     end
 
     def render(context)
-      level_array = []
+      level_array = Hash.new(0)
       site = context.registers[:site]
-      site.posts.docs.each do |post|
-        if !post.data['level'].nil? &&  !level_array.include?(post.data['level'])
-          level_array.push(post.data['level'])
-        end
-      end
+
+      site.posts.docs.inject(level_array){
+        |hash, item| hash[item.data['level']] += 1 unless item.data['level'].nil?; hash
+      }
 
       tagcloud = "<ul>"
-      level_array.each do |level|
-        tagcloud << "<li><a href='#{site.baseurl}/level_list/#{level}/index.html'>#{level}</a></li>"
+      level_array.each do |key, value|
+        tagcloud << "<li><a href='#{site.baseurl}/level_list/#{key}/index.html'>#{key} (#{value})</a></li>"
       end
       tagcloud << "</ul>"
       "#{tagcloud}"
@@ -85,11 +84,10 @@ module Jekyll
   end
 
   class LevelPageGenerator < Generator
-
     safe true
 
     def generate(site)
-      level_array = []
+      level_array = Array.new(0)
       site.posts.docs.each do |post|
         if !post.data['level'].nil? &&  !level_array.include?(post.data['level'])
           level_array.push(post.data['level'])
