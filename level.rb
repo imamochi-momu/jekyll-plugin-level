@@ -77,7 +77,7 @@ module Jekyll
       end
 
       self.read_yaml(File.join(base, '_layouts'), 'tag.html')
-      self.data['title'] = "Tag:#{tag}"
+      self.data['title'] = "#{tag}"
       self.data['posts'] = level_list
       self.data['title_detail'] = 'レベル「' + tag + '」' + 'がつけられた記事'
     end
